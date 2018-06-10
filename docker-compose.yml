@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    image: thisisproject_django
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: /start
+
+  redis:
+    image: redis:3.2
+
+  celeryworker:
+    <<: *django
+    image: thisisproject_celeryworker
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: thisisproject_celerybeat
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celerybeat
+
+  channelsserver:
+    <<: *django
+    image: thisisproject_channelsserver
+    depends_on:
+     - redis
+    ports:
+      - "8001:8001"
+    command: /start-channelsserver
