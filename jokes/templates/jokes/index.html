@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Jokes</title>
+  <!-- Bulma styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-6 is-offset-3">
+          <div id="jokes"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    const jokesws = new WebSocket(
+      'ws://' + window.location.host + '/ws/jokes/'
+    )
+
+    const addJoke = (joke) => {
+      document.querySelector('#jokes').innerHTML = `
+        <article class="message is-success">
+          <div class="message-header">
+            <p>Joke</p>
+          </div>
+          <div class="message-body">${joke}</div>
+        </article>
+      ` + document.querySelector('#jokes').innerHTML
+    }
+
+    jokesws.onmessage = (event_) => {
+      const joke = event_.data
+      addJoke(joke)
+    }
+
+    jokesws.onclose = (event_) => {
+      console.error('Jokes socket closed')
+    }
+  </script>
+</body>
+</html>
