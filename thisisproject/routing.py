@@ -1,3 +1,6 @@
-from channels.routing import ProtocolTypeRouter
+from channels.routing import ProtocolTypeRouter, URLRouter
+import jokes.routing
 
-application = ProtocolTypeRouter({})
+application = ProtocolTypeRouter(
+    {"websocket": URLRouter(jokes.routing.websocket_urlpatterns)}
+)
